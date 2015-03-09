@@ -8,7 +8,6 @@ Dotenv.load
 Capybara.run_server = false
 Capybara.javascript_driver = :selenium
 Capybara.default_driver = :selenium
-Capybara.app_host = 'http://cafe.naver.com/specup.cafe'
 Capybara.default_wait_time = 5
 
 EMAIL_REGEX = /[\w+\-.]+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+/i
@@ -26,7 +25,7 @@ module Scraper
     include Capybara::DSL
 
     def initialize
-      @host = 'http://cafe.naver.com/specup.cafe'
+      @host = ENV['host']
       @study_infos = []
     end
 
