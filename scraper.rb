@@ -11,10 +11,12 @@ Capybara.default_driver = :selenium
 Capybara.default_wait_time = 5
 
 EMAIL_REGEX = /[\w+\-.]+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+/i
+PHONE_REGEX = /(010[ .-]?[0-9]{4}+[ .-]?[0-9]{4}+)/
+KAKAO_REGEX = /카{0,2}+오?+톡[\s]?[아]?[이]?[디]?[i]?[d]?[\s]?+[:]?[\s]?+([\w]+)/
 
-StudyInfo = Struct.new(:host, :link, :study_name, :contact, :date) do
+StudyInfo = Struct.new(:host, :link, :study_name, :contact, :date, :kakao, :kakao_ptag, :phone) do
   def to_a
-    [host, link, study_name, contact, date]
+    [host, link, study_name, contact, date, kakao, kakao_ptag, phone]
   end
 end
 
@@ -44,19 +46,39 @@ module Scraper
       within_frame(main_frame) do
         text = page.text
 
+        doc = Nokogiri::HTML(page.html)
+        table = doc.xpath('//table').text
+        text = text + table
+
+        study_info = StudyInfo.new
+        study_info.host = host
+        study_info.link = link
+        study_info.study_name = study_name
+        study_info.date = find('div.tit-box > div.fr > table > tbody > tr > td.m-tcol-c.date').text
+
         if text =~ EMAIL_REGEX
-          study_info = StudyInfo.new
           study_info.contact = text.match(EMAIL_REGEX).to_s
-          study_info.host = host
-          study_info.link = link
-          study_info.study_name = study_name
-          study_info.date = find('div.tit-box > div.fr > table > tbody > tr > td.m-tcol-c.date').text
-
-          study_infos << study_info
-          p study_info.to_a.to_s
-
-          write_info study_info
         end
+        if text =~ PHONE_REGEX
+          study_info.phone = text.match(PHONE_REGEX).to_s
+        end
+        if text =~ KAKAO_REGEX
+          study_info.kakao = text.match(KAKAO_REGEX).to_s
+        end
+
+        ptags = doc.xpath('//p')
+        kakao_ptags = ''
+        for p in ptags
+          if p.text =~ /[톡]/
+            kakao_ptags += p.text
+          end
+        end
+        study_info.kakao_ptag = kakao_ptags
+
+        study_infos << study_info
+        p study_info.to_a.to_s
+
+        write_info study_info
       end
     end
 
@@ -88,9 +110,9 @@ module Scraper
       visit host
       login
 
-      pages = 1..20
+      pages = 1..60
       pages.each do |page|
-        link = "http://cafe.naver.com/ArticleList.nhn?search.boardtype=L&search.menuid=1205&search.questionTab=A&search.clubid=15754634&search.totalCount=151&search.page=#{page}"
+        link = "http://cafe.naver.com/ArticleList.nhn?search.boardtype=L&search.menuid=600&search.questionTab=A&search.clubid=16996348&search.totalCount=151&search.page=#{page}"
         get_article_links link
       end
     end
