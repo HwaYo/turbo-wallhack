@@ -67,11 +67,13 @@ module Scraper
         end
 
         ptags = doc.xpath('//p')
+        kakao_ptags = ''
         for p in ptags
           if p.text =~ /[톡]/
-            study_info.kakao_ptag = p.text
+            kakao_ptags += p.text
           end
         end
+        study_info.kakao_ptag = kakao_ptags
 
         study_infos << study_info
         p study_info.to_a.to_s
