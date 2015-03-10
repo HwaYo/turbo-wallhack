@@ -69,7 +69,7 @@ module Scraper
         ptags = doc.xpath('//p')
         for p in ptags
           if p.text =~ /[톡]/
-            p p.text
+            study_info.kakao_ptag = p.text
           end
         end
 
