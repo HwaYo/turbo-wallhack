@@ -16,7 +16,7 @@ KAKAO_REGEX = /카{0,2}+오?+톡[\s]?[아]?[이]?[디]?[i]?[d]?[\s]?+[:]?[\s]?+(
 
 StudyInfo = Struct.new(:host, :link, :study_name, :contact, :date, :kakao, :kakao_ptag, :phone) do
   def to_a
-    [host, link, study_name, contact, date, kakao, kakao_ptag phone]
+    [host, link, study_name, contact, date, kakao, kakao_ptag, phone]
   end
 end
 
@@ -67,11 +67,13 @@ module Scraper
         end
 
         ptags = doc.xpath('//p')
+        kakao_ptags = ''
         for p in ptags
           if p.text =~ /[톡]/
-            p p.text
+            kakao_ptags += p.text
           end
         end
+        study_info.kakao_ptag = kakao_ptags
 
         study_infos << study_info
         p study_info.to_a.to_s
