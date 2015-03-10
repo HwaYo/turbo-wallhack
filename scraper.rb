@@ -16,7 +16,7 @@ KAKAO_REGEX = /카{0,2}+오?+톡[\s]?[아]?[이]?[디]?[i]?[d]?[\s]?+[:]?[\s]?+(
 
 StudyInfo = Struct.new(:host, :link, :study_name, :contact, :date, :kakao, :kakao_ptag, :phone) do
   def to_a
-    [host, link, study_name, contact, date, kakao, kakao_ptag phone]
+    [host, link, study_name, contact, date, kakao, kakao_ptag, phone]
   end
 end
 
