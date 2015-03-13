@@ -10,7 +10,8 @@ Capybara.javascript_driver = :selenium
 Capybara.default_driver = :selenium
 Capybara.default_wait_time = 5
 
-EMAIL_REGEX = /[\w+\-.]+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+/i
+#EMAIL_REGEX = /[\w+\-.]+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+/i
+EMAIL_REGEX = /([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})/i
 PHONE_REGEX = /(010[ .-]?[0-9]{4}+[ .-]?[0-9]{4}+)/
 KAKAO_REGEX = /카{0,2}+오?+톡[\s]?[아]?[이]?[디]?[i]?[d]?[\s]?+[:]?[\s]?+([\w]+)/
 
